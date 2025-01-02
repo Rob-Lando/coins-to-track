@@ -3,12 +3,9 @@ import polars as pl
 import json
 import os
 from datetime import datetime,timezone
+from dotenv import load_dotenv
 
 
-
-
-def parse_args():
-    pass
 
 def cmc_extract(cmc_endpoint_url: str, headers: dict, parameters: dict) -> dict:
 
@@ -16,10 +13,6 @@ def cmc_extract(cmc_endpoint_url: str, headers: dict, parameters: dict) -> dict:
     returns: dict api response 
     """
 
-    # coins_to_track = pl.read_csv("coins_to_track.csv")
-    # symbols = ','.join(ctt['Symbol'])
-
-    # parameters.update(symbol=symbols)
     session = requests.Session()
     session.headers.update(headers)
 
@@ -50,12 +43,12 @@ def get_quotes(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write
     ]
 
     # concat quote dfs to one single LazyFrame
-    lf = pl.concat(quote_dfs, how = 'vertical_relaxed')
+    lf = pl.concat(quote_lfs, how = 'vertical_relaxed')
 
     # materialize to DataFrame w/ collect() and write data to local path as csv
     lf.collect().write_csv(file = fr"{csv_write_path}/{ts.strftime('%Y%m%dT%H%M%S')}_quotes.csv")
 
-    return None
+    return lf
 
 
 
@@ -97,42 +90,79 @@ def get_metadata(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_wri
 
 
     for column,type in dict(zip(meta_df.columns,meta_df.dtypes)).items():
-        # Convert fields of type List[] to pipe delimited strings so we can write to csv
-        if type == pl.List:
+        # Convert fields of type List[str] to pipe delimited strings so we can write to csv
+        if type == pl.List(str):
             meta_df = meta_df.with_columns(pl.col(column).list.join("|"))
+        elif type == pl.List(pl.Null):
+            # convert fields of type List[Null] to Null
+            meta_df = meta_df.with_columns(pl.when(pl.col(column).list == []).then(pl.col(column)))
+            meta_df = meta_df.with_columns(pl.col(column).cast(pl.Null))
 
 
-    meta_df.write_csv(file = fr"src/extracts/metadata/{ts.strftime('%Y%m%dT%H%M%S')}_metadata.csv")
+    meta_df.write_csv(file = fr"{csv_write_path}/{ts.strftime('%Y%m%dT%H%M%S')}_metadata.csv")
 
-    return meta_df
+    return meta_df.lazy()
+
+
+
+def get_map(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_path: str) -> None:
+
+    responses = cmc_extract(cmc_endpoint_url = cmc_endpoint_url, headers = headers, parameters = parameters)
+
+    ts = datetime.now(timezone.utc)
+
+    returned_data = responses["data"]
+
+    # and adding IsTopCurrency, LoadedWhen columns and unnesting platform
+    map_df = pl.from_records(returned_data).with_columns(
+
+            (pl.col("rank").cast(pl.Int64) <= 10).alias("IsTopCurrency"),
+
+            # rename keys in nested field before unnesting
+            pl.col("platform").struct.rename_fields(["platform.id","platform.name","platform.slug","platform.symbol","platform.token_address"]),
+
+            pl.lit(ts.strftime("%Y-%m-%dT%H:%M:%SZ")).alias("LoadedWhen")
+
+        ).unnest("platform")
+
+    map_df.write_csv(file = fr"{csv_write_path}/{ts.strftime('%Y%m%dT%H%M%S')}_map.csv")
+
+    return map_df.lazy()
 
 def main():
 
-    CLARGS = parse_args()
-
-    coins_to_track = pl.read_csv("./coins_to_track.csv")
+    coins_to_track = pl.read_csv("../coins_to_track.csv")
     symbols = ','.join(coins_to_track['Symbol'])
-    cmc_key = os.getenv("CMC_KEY")
+    
+    load_dotenv()
+    cmc_key = os.getenv("X-CMC_PRO_API_KEY")
 
     headers = {
         "X-CMC_PRO_API_KEY": cmc_key,
         "Content-Type": "application/json"
     }
 
-    get_quotes(        
+    quotes = get_quotes(        
         cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest", 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
-        csv_write_path = "src/extracts/metadata"
+        csv_write_path = "extracts/quotes"
     )
 
-    get_metadata(
+    map_ = get_map(
+        cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map", 
+        headers = headers, 
+        parameters = {}, 
+        csv_write_path = "extracts/map"
+    )
+
+    metadata = get_metadata(
         cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info", 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
-        csv_write_path = "src/extracts/metadata"
+        csv_write_path = "extracts/metadata"
     )
-    pass
 
 if __name__ == "__main__":
+    
     main()
