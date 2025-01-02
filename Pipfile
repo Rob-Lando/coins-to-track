@@ -7,6 +7,8 @@ name = "pypi"
 polars = "==1.17.1"
 requests = "==2.31.0"
 ipykernel = "==6.29.3"
+python-dotenv = "*"
+argparse = "==1.4.0"
 
 [dev-packages]
 
