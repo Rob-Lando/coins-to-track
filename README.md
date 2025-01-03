@@ -110,4 +110,4 @@
 
       - respective data is written to dedicated directory as a timestamped csv w/ path format: 
       
-      ```analysis/<type_of_data>/YYYYMMDDTHHMMSS_relative_24h_percent_change_vs_<SYMBOL>.csv```
+      ```analysis/<type_of_data>/YYYYMMDDTHHMMSS_<avg_relative/relative>_24h_percent_change_vs_<SYMBOL>.csv```
