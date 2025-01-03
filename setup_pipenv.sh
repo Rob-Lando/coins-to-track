@@ -10,6 +10,3 @@ pipenv --python 3.11
 
 echo 'Creating Pipfile and Pipfile.lock from requirements.txt ...'
 pipenv install -r requirements.txt
-
-echo 'Activating virtual environment ...'
-pipenv shell
