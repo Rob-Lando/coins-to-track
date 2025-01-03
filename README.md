@@ -91,7 +91,7 @@
     
   - From Powershell or terminal run the following from the root directory to activate the environment:
   
-   ```pipenv shell```
+    ```pipenv shell```
     
     - Once the shell is active we can run our scripts with all the dependencies needed.
 
