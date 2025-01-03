@@ -64,8 +64,10 @@
       ```pipenv --version```
     
         - For Windows: If pipenv is not a registered command in Powershell run ```pip show pipenv``` to get the location of its installation
-        - Bottom of output should look like: ```Location: C:\Users\robla\AppData\Roaming\Python\Python311\site-packages``` 
-        - Add the following to your Windows PATH variable: C:\Users\robla\AppData\Roaming\Python\Python311\Scripts
+        - Bottom of output should look like: 
+        ```Location: C:\Users\robla\AppData\Roaming\Python\Python311\site-packages``` 
+        - Add the following to your Windows PATH variable: 
+        ```C:\Users\robla\AppData\Roaming\Python\Python311\Scripts```
         - reconfirm installation with ```pipenv --version```
 
 ### Activating Venv:
