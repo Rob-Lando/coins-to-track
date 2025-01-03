@@ -5,7 +5,6 @@
 ```
 C:.
 │   .gitignore
-│   coins_to_track.csv
 │   Pipfile
 │   Pipfile.lock
 │   README.md
@@ -13,36 +12,23 @@ C:.
 │
 └───src
     │   .env
+    │   coins_to_track.csv
     │   extract.py
     │   quote_analysis.py
     │   test.ipynb
     │
     ├───analysis
-    │       20250102T204405_relative_24h_percent_change_vs_ETH.csv
-    │       20250102T204422_relative_24h_percent_change_vs_BTC.csv
-    │       20250103T013812_relative_24h_percent_change_vs_BTC.csv
+    │       20250103T071119_relative_24h_percent_change_vs_BTC.csv
     │
     └───extracts
         ├───map
-        │       20250102T204327_map.csv
-        │       20250103T013745_map.csv
+        │       20250103T071023_map.csv
         │
         ├───metadata
-        │       20250102T204327_metadata.csv
-        │       20250103T013745_metadata.csv
+        │       20250103T071024_metadata.csv
         │
         └───quotes
-                20250102T180105_quotes.csv
-                20250102T180108_quotes.csv
-                20250102T180110_quotes.csv
-                20250102T180840_quotes.csv
-                20250102T194052_quotes.csv
-                20250102T195535_quotes.csv
-                20250102T200831_quotes.csv
-                20250102T200942_quotes.csv
-                20250102T204327_quotes.csv
-                20250103T013741_quotes.csv
-
+                20250103T071023_quotes.csv
 ```
 
 ### Prerequisites:
