@@ -29,11 +29,15 @@
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
 
-      - respective data is written to dedicated directory as a timestamped csv w/ path format: ```extracts/<type_of_data>/YYYYMMDDTHHMMSS_<type_of_data>.csv```
+      - respective data is written to dedicated directory as a timestamped csv w/ path format: 
+      
+      ```extracts/<type_of_data>/YYYYMMDDTHHMMSS_<type_of_data>.csv```
 
     - Run analysis to find the average difference in 24hr percent returns relative to BTC across all extracted quote data files: ```python quote_analysis.py```
       - Optionally run ```python quote_analysis.py --reference_symbol='<SYMBOL>'``` to do the same analysis against another reference symbol like (ETH for example)
 
-      - respective data is written to dedicated directory as a timestamped csv w/ path format: ```analysis/<type_of_data>/YYYYMMDDTHHMMSS_relative_24h_percent_change_vs_<SYMBOL>.csv```
+      - respective data is written to dedicated directory as a timestamped csv w/ path format: 
+      
+      ```analysis/<type_of_data>/YYYYMMDDTHHMMSS_relative_24h_percent_change_vs_<SYMBOL>.csv```
 
   
