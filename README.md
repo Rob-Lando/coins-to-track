@@ -84,7 +84,7 @@
     - Both of the above scripts do run the commands listed below.
 
   - Manual Setup:  
-    - From Powershell or terminal run the following from the root directory:
+    - From Powershell or terminal run the following from the ROOT directory:
       - Create a pipenv project in your current directory: ```pipenv --python 3.11```
         - follow pyenv prompt to install python 3.11 if it's not already on your system 
       - Generate Pipfile & Pipfile.lock from given requirements.txt file: ```pipenv install -r requirements.txt```
