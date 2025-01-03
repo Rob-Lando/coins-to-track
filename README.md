@@ -43,12 +43,14 @@
 ```
 
 ### Prerequisites:
-  - python & pip is installed locally
+  - python & pip are installed locally
       - confirm pip installation with:
         ```pip --version```
 
   - pyenv is installed
-    - If not see: https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv for how to install on linux/mac/windows
+    - This is so that we can create virtual envs based off any python version that may not already be on your system.
+        - The scripts to run will be based on 3.11, if 3.11 is already on your system you can skip any pyenv installation steps!
+        - If not see: https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv for how to install on linux/mac/windows
 
     - confirm installation with:
     ```pyenv --version```
