@@ -97,7 +97,7 @@
 
   
 ## Running Scripts:
-  - From Powershell or terminal **run the following from within the coins-to-track/src/ directory**:
+  - From Powershell or terminal **run the following from within the ```coins-to-track/src/``` directory**:
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
 
