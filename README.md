@@ -1,5 +1,18 @@
 ## Coins-To-Track
 
+### Directory Structure:
+
+```
+C:.
+└───src
+    ├───analysis
+    └───extracts
+        ├───map
+        ├───metadata
+        └───quotes
+
+```
+
 ### Prerequisites:
   - python & pip is installed locally
 
