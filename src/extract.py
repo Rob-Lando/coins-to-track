@@ -131,7 +131,7 @@ def get_map(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_pa
 
 def main():
 
-    coins_to_track = pl.read_csv("../coins_to_track.csv")
+    coins_to_track = pl.read_csv("coins_to_track.csv")
     symbols = ','.join(coins_to_track['Symbol'])
     
     load_dotenv()
