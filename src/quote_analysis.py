@@ -73,6 +73,20 @@ if __name__ == "__main__":
 
     ts = datetime.now(timezone.utc)
 
+    if os.getcwd().endswith("src"):
+
+        # create landing directories for data if they don't exist already
+        for dir_ in ["./analysis","./analysis/diffs","./analysis/average_diffs"]:
+            try:
+                os.mkdir(dir_)
+            except FileExistsError:
+                continue
+
+    else:
+        
+        raise Exception("\n\n******Please run this script from within the src/ directory!******\n\n")
+
+
     # read in all price quote files
     df = read_csv_files(path = "./extracts/quotes")
 
@@ -80,17 +94,27 @@ if __name__ == "__main__":
 
     df = add_reference_symbol_fields(df = df, symbol = symbol, join_fields = {"left":"LoadedWhen", "right":"LoadedWhen"}, target_field = "percent_change_24h")
 
-    # calculate relative perecent change vs BTC
+    # calculate relative percent change vs BTC
     df = df.with_columns(
             (pl.col("percent_change_24h") - pl.col(f"percent_change_24h_{symbol}")).alias(f"relative_percent_change_24h_vs_{symbol}")
         )
 
-    df.write_csv(f"analysis/{ts.strftime('%Y%m%dT%H%M%S')}_relative_24h_percent_change_vs_{symbol}.csv")
+    df.write_csv(f"analysis/diffs/{ts.strftime('%Y%m%dT%H%M%S')}_relative_24h_percent_change_vs_{symbol}.csv")
 
     df = df.select(
             "symbol",
             f"relative_percent_change_24h_vs_{symbol}"
         ).group_by("symbol").agg(pl.mean(f"relative_percent_change_24h_vs_{symbol}").name.prefix("avg_"))
+
+
+    # Might be useful but could cause problems because this value will be a growing string with each run as
+    # averages are taken over more and more files    
+    # extracts_to_analyze = "|".join(os.listdir("./extracts/quotes"))
+    # df = df.with_columns(
+    #     pl.lit(extracts_to_analyze).alias("SourceFileSet")
+    # )
+
+    df.write_csv(f"analysis/average_diffs/{ts.strftime('%Y%m%dT%H%M%S')}_avg_relative_24h_percent_change_vs_{symbol}.csv")
 
     print(df.sort(f"avg_relative_percent_change_24h_vs_{symbol}", descending = True))
 
