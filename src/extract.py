@@ -2,8 +2,36 @@ import requests
 import polars as pl
 import json
 import os
+import argparse
 from datetime import datetime,timezone
 from dotenv import load_dotenv
+
+
+
+def cla_parser_setup():
+
+    parser = argparse.ArgumentParser(
+                description='parse command line arguments for cmc quote analysis',
+            )
+
+    parser.add_argument(
+        "--coins_to_track",
+        type = str,
+        default = "coins_to_track.csv",
+        required = False,
+        help = "File path to csv containing crypto symbols to query related data from CoinMarketCap API"
+    )
+
+    parser.add_argument(
+        "--cmc_api_key_env_var_name",
+        type = str,
+        default = "X-CMC_PRO_API_KEY",
+        required = False,
+        help = "cmc api key environment variable name"
+    )
+
+    return parser
+
 
 
 
@@ -131,16 +159,34 @@ def get_map(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_pa
 
 def main():
 
-    coins_to_track = pl.read_csv("coins_to_track.csv")
-    symbols = ','.join(coins_to_track['Symbol'])
-    
-    load_dotenv()
-    cmc_key = os.getenv("X-CMC_PRO_API_KEY")
+    CLA = cla_parser_setup().parse_args()
 
-    headers = {
-        "X-CMC_PRO_API_KEY": cmc_key,
-        "Content-Type": "application/json"
-    }
+    # [os.path.join(dp, f) for dp, dn, filenames in os.walk(".") for f in filenames]
+    if os.getcwd().endswith("src"):
+
+        # load environment variables from .env file in src/
+        load_dotenv()
+
+        coins_to_track = pl.read_csv(CLA.coins_to_track)
+        symbols = ','.join(coins_to_track['Symbol'])
+
+        # set http request headers with cmc api key
+        headers = {
+            "X-CMC_PRO_API_KEY": os.getenv(CLA.cmc_api_key_env_var_name),
+            "Content-Type": "application/json"
+        }
+
+        # create landing directories for data if they don't exist already
+        for dir_ in ["./extracts","./extracts/map","./extracts/quotes","./extracts/metadata"]:
+            try:
+                os.mkdir(dir_)
+            except FileExistsError:
+                continue
+
+    else:
+        
+        raise Exception("\n\n******Please run this script from within the src/ directory!******\n\n")
+
 
     quotes = get_quotes(        
         cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest", 
@@ -163,6 +209,7 @@ def main():
         csv_write_path = "extracts/metadata"
     )
 
-if __name__ == "__main__":
-    
+
+if __name__ == '__main__':
+
     main()
