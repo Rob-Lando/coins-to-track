@@ -21,23 +21,25 @@
     │
     ├───analysis
     │   ├───average_diffs
-    │   │       20250103T221245_avg_relative_24h_percent_change_vs_BTC.csv
+    │   │       20250102T000000_avg_relative_24h_percent_change_vs_BTC.csv
+    |   |       20250103T000000_avg_relative_24h_percent_change_vs_BTC.csv
     │   │
     │   └───diffs
-    │           20250103T221245_relative_24h_percent_change_vs_BTC.csv
+    │           20250102T000000_relative_24h_percent_change_vs_BTC.csv
+    |           20250103T000000_relative_24h_percent_change_vs_BTC.csv
     │
     └───extracts
         ├───map
-        │       20250103T221018_map.csv
-        │       20250103T221202_map.csv
+        │       20250102T000000_map.csv
+        │       20250103T000000_map.csv
         │
         ├───metadata
-        │       20250103T221018_metadata.csv
-        │       20250103T221202_metadata.csv
+        │       20250102T000000_metadata.csv
+        │       20250103T000000_metadata.csv
         │
         └───quotes
-                20250103T221016_quotes.csv
-                20250103T221201_quotes.csv
+                20250102T000000_quotes.csv
+                20250103T000000_quotes.csv
 ```
 
 ### Prerequisites:
