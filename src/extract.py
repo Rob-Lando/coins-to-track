@@ -3,6 +3,7 @@ import polars as pl
 import json
 import os
 import argparse
+import sys
 from datetime import datetime,timezone
 from dotenv import load_dotenv
 
@@ -49,7 +50,6 @@ def cmc_extract(cmc_endpoint_url: str, headers: dict, parameters: dict) -> dict:
     return responses
 
 
-
 def get_quotes(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_path: str) -> None:
 
     responses = cmc_extract(cmc_endpoint_url = cmc_endpoint_url, headers = headers, parameters = parameters)
@@ -59,12 +59,19 @@ def get_quotes(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write
     returned_data = responses["data"]
     returned_symbols = list(returned_data.keys())
 
+    def null_to_big_int(val):
+        # Sometimes cmc_rank returns None and breaks TopCurrency comparison
+        if val == None:
+            return sys.maxsize
+        else:
+            return int(val)
+
     # list comp to build list of LazyFrames (Lazy evaluated DataFrame) with quote data for each symbol
     # and adding symbol identifier, IsTopCurrency, and LoadedWhen columns to each chunk
     quote_lfs = [
         pl.LazyFrame(data["quote"]["USD"]).with_columns(
                 pl.lit(symbol).alias("symbol"),
-                pl.lit(int(returned_data[symbol]["cmc_rank"])<=10).alias("IsTopCurrency"),
+                pl.lit(null_to_big_int(returned_data[symbol]["cmc_rank"])<=10).alias("IsTopCurrency"),
                 pl.lit(ts.strftime("%Y-%m-%dT%H:%M:%SZ")).alias("LoadedWhen")
             ) 
         for symbol,data in returned_data.items()
@@ -184,30 +191,37 @@ def main():
                 continue
 
     else:
-        
+
         raise Exception("\n\n******Please run this script from within the src/ directory!******\n\n")
 
+    quote_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+    map_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map"
+    metadata_url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info"
 
     quotes = get_quotes(        
-        cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest", 
+        cmc_endpoint_url = quote_url, 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
         csv_write_path = "extracts/quotes"
     )
 
     map_ = get_map(
-        cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map", 
+        cmc_endpoint_url = map_url, 
         headers = headers, 
         parameters = {}, 
         csv_write_path = "extracts/map"
     )
 
     metadata = get_metadata(
-        cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info", 
+        cmc_endpoint_url = metadata_url, 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
         csv_write_path = "extracts/metadata"
     )
+
+    for _,frame in {"quote":(quotes,quote_url),"map":(map_,map_url),"metadata":(metadata,metadata_url)}.items(): 
+        missing_symbols = [symbol for symbol in coins_to_track['Symbol'] if symbol not in frame[0].select("symbol").collect()['symbol'].to_list()]
+        print(f"Symbols unable to collect {_} data <{missing_symbols}>\n Please verify they are valid symbols tracked on {frame[1]}\n\n")
 
 
 if __name__ == '__main__':
