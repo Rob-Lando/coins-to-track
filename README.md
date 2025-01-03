@@ -1,6 +1,6 @@
-## Coins-To-Track
+# Coins-To-Track
 
-### Example Directory Structure:
+## Example Directory Structure:
 
 ```
 ./ (ROOT)
@@ -42,7 +42,7 @@
                 20250103T000000_quotes.csv
 ```
 
-### Prerequisites:
+## Prerequisites:
   - python & pip are installed locally and associated commands are available in Powershell or terminal
       - confirm pip installation with:
         ```pip --version```
@@ -77,7 +77,7 @@
         - For Linux:
             - If pipenv is not a registered command in terminal, try restarting a new shell. Otherwise idk... :/
 
-### Activating Venv:
+## Activating Venv:
   - Using provided setup scripts:
     - If on Windows: Run ```setup_pipenv.ps1``` in powershell
     - If on Linux:  Run ```bash setup_pipenv.sh``` in terminal
@@ -93,7 +93,7 @@
     - Once the shell is active we can run our scripts with all the dependencies needed.
 
   
-### Running Scripts:
+## Running Scripts:
   - From Powershell or terminal **run the following from within the src/ directory**:
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
