@@ -89,9 +89,7 @@
         - follow pyenv prompt to install python 3.11 if it's not already on your system 
       - Generate Pipfile & Pipfile.lock from given requirements.txt file: ```pipenv install -r requirements.txt```
     
-  - From Powershell or terminal run the following from the root directory to activate the environment:
-  
-    ```pipenv shell```
+  - From Powershell or terminal run the following from the root directory to activate the environment: ```pipenv shell```
     
     - Once the shell is active we can run our scripts with all the dependencies needed.
 
