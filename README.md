@@ -52,7 +52,7 @@
         - The scripts to run will be based on 3.11, if 3.11 is already on your system you can skip any pyenv installation steps!
         - If not see: https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv for how to install on linux/mac/windows
 
-    - confirm installation with:
+    - If necessary confirm installation with:
     ```pyenv --version```
 
   - pipenv is installed
