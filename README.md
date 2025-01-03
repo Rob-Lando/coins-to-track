@@ -56,7 +56,7 @@ C:.
     - Activate virtual environment: ```pipenv shell```
   
 ### Running Scripts:
-  - From Powershell or terminal run the following from within the src/ directory:
+  - From Powershell or terminal **run the following from within the src/ directory**:
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
 
