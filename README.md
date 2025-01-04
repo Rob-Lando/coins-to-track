@@ -101,11 +101,14 @@
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
 
+      - I assume here that symbols in ```coins_to_track.csv``` are static, dealing with a list changing over time breaks downstream analysis due to schema mismatches of batch files (I have an idea on how to adjust for this).
+
       - respective data is written to dedicated directory as a timestamped csv w/ path format: 
       
       ```extracts/<type_of_data>/YYYYMMDDTHHMMSS_<type_of_data>.csv```
 
     - Run analysis to find the average difference in 24hr percent returns relative to BTC across all extracted quote data files: ```python quote_analysis.py```
+    
       - Optionally run ```python quote_analysis.py --reference_symbol='<SYMBOL>'``` to do the same analysis against another reference symbol like (ETH for example)
 
       - respective data is written to dedicated directory as a timestamped csv w/ path format: 
