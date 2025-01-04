@@ -79,7 +79,7 @@
 
 ## Activating Venv:
   - Using provided setup scripts:
-    - If on Windows: Run ```setup_pipenv.ps1``` in powershell
+    - If on Windows: Run ```powershell setup_pipenv.ps1``` in powershell (if blocked from running check execution policy or right click properties to check unblock)
     - If on Linux:  Run ```bash setup_pipenv.sh``` in terminal
     - Both of the above scripts do run the commands listed below.
 
