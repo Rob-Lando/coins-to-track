@@ -40,9 +40,9 @@ def read_csv_files(path: str):
 
     files = os.listdir(path)
 
-    df = pl.concat([pl.read_csv(f"{path}/{filename}").select("LoadedWhen","last_updated","symbol","percent_change_24h") for filename in sorted(files)[::-1]])
+    df = pl.concat([pl.read_csv(f"{path}/{filename}").select("LoadedWhen","last_updated","symbol","percent_change_24h") for filename in files])
     
-    return df
+    return df.sort(by=["LoadedWhen","symbol"], descending = True)
 
 def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict, target_field: str) -> pl.DataFrame:
 
@@ -103,6 +103,8 @@ if __name__ == "__main__":
 
     # read in all price quote files
     df = read_csv_files(path = "./extracts/quotes")
+
+    print(df)
 
     symbol = CLA.reference_symbol
 
