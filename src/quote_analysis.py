@@ -29,7 +29,7 @@ def read_csv_files(path: str):
 
     """
     read in and concat batch quote csv files into polars DataFrame
-    NOTE: breaks if schemas of all batch files are not the same (namely as a result of changing coins_to_track.csv symbol list)
+    NOTE: breaks if schemas of all batch files are not the same.
 
     parameters:
     path (str): directory to read files from
