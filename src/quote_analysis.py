@@ -125,6 +125,7 @@ if __name__ == "__main__":
     #     pl.lit(extracts_to_analyze).alias("SourceFileSet")
     # )
 
+    df = df.sort(f"avg_relative_percent_change_24h_vs_{symbol}", descending = True)
     df.write_csv(f"analysis/average_diffs/{ts.strftime('%Y%m%dT%H%M%S')}_avg_relative_24h_percent_change_vs_{symbol}.csv")
 
     # print(df.sort(f"avg_relative_percent_change_24h_vs_{symbol}", descending = True))
