@@ -27,6 +27,17 @@ def cla_parser_setup():
 
 def read_csv_files(path: str):
 
+    """
+    read in and concat batch quote csv files into polars DataFrame
+    NOTE: breaks if schemas of all batch files are not the same (namely as a result of changing coins_to_track.csv symbol list)
+
+    parameters:
+    path (str): directory to read files from
+
+    returns:
+    pl.DataFrame
+    """
+
     files = os.listdir(path)
 
     df = pl.concat([pl.read_csv(f"{path}/{filename}").select("LoadedWhen","last_updated","symbol","percent_change_24h") for filename in sorted(files)[::-1]])
