@@ -64,8 +64,6 @@ def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict
 
     reference_records = df.filter(pl.col("symbol") == symbol)
 
-    print(reference_records)
-
     if reference_records.shape[0] != 0:
 
         df = df.join(
