@@ -104,8 +104,6 @@ if __name__ == "__main__":
     # read in all price quote files
     df = read_csv_files(path = "./extracts/quotes")
 
-    print(df)
-
     symbol = CLA.reference_symbol
 
     df = add_reference_symbol_fields(df = df, symbol = symbol, join_fields = {"left":"LoadedWhen", "right":"LoadedWhen"}, target_field = "percent_change_24h")
