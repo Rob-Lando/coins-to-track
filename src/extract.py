@@ -39,6 +39,13 @@ def cla_parser_setup():
 def cmc_extract(cmc_endpoint_url: str, headers: dict, parameters: dict) -> dict:
 
     """
+    Get json data from coinmarket cap api endpoint and return as a python dictionary.
+
+    parameters:
+    cmc_endpoint_url (str): coinmarketcap api endpoint url
+    headers (dict): request headers for coinmarketcap api
+    parameters (dict): request parameters for coinmarketcap api endpoint
+
     returns: dict api response 
     """
 
@@ -50,7 +57,25 @@ def cmc_extract(cmc_endpoint_url: str, headers: dict, parameters: dict) -> dict:
     return responses
 
 
-def get_quotes(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_path: str) -> None:
+def get_quotes(headers: dict, parameters: dict, csv_write_path: str, cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest") -> pl.LazyFrame:
+
+
+    """
+    - Get json data from coinmarket cap api v1/cryptocurrency/quotes/latest endpoint 
+    - convert to polars dataframe (cleaning and unnesting logic specific to v1/cryptocurrency/quotes/latest return schema) 
+        see: https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
+    - write results to csv 
+    - return resulting data as LazyFrame
+
+    parameters:
+    cmc_endpoint_url (str): coinmarketcap api endpoint url
+    headers (dict): request headers for coinmarketcap api
+    parameters (dict): request parameters for coinmarketcap api endpoint
+    csv_write_path (str): local directory to write resulting csv files to
+    
+    returns: 
+    polars.LazyFrame
+    """
 
     responses = cmc_extract(cmc_endpoint_url = cmc_endpoint_url, headers = headers, parameters = parameters)
     
@@ -87,7 +112,24 @@ def get_quotes(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write
 
 
 
-def get_metadata(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_path: str) -> None:
+def get_metadata(headers: dict, parameters: dict, csv_write_path: str, cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info") -> pl.LazyFrame:
+
+    """
+    - Get json data from coinmarket cap api v2/cryptocurrency/info endpoint 
+    - convert to polars dataframe (cleaning and unnesting logic specific to v2/cryptocurrency/info return schema)
+        See: https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyInfo
+    - write results to csv 
+    - return resulting data as LazyFrame
+
+    parameters:
+    cmc_endpoint_url (str): coinmarketcap api endpoint url
+    headers (dict): request headers for coinmarketcap api
+    parameters (dict): request parameters for coinmarketcap api endpoint
+    csv_write_path (str): local directory to write resulting csv files to
+    
+    returns: 
+    polars.LazyFrame
+    """
 
     responses = cmc_extract(cmc_endpoint_url = cmc_endpoint_url, headers = headers, parameters = parameters)
     
@@ -140,7 +182,24 @@ def get_metadata(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_wri
 
 
 
-def get_map(cmc_endpoint_url: str, headers: dict, parameters: dict, csv_write_path: str) -> None:
+def get_map(headers: dict, parameters: dict, csv_write_path: str, cmc_endpoint_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map") -> pl.LazyFrame:
+
+    """
+    - Get json data from coinmarket cap api v1/cryptocurrency/map endpoint 
+    - convert to polars dataframe (cleaning and unnesting logic specific to v1/cryptocurrency/map return schema)
+        See: https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyMap
+    - write results to csv 
+    - return resulting data as LazyFrame
+
+    parameters:
+    cmc_endpoint_url (str): coinmarketcap api endpoint url
+    headers (dict): request headers for coinmarketcap api
+    parameters (dict): request parameters for coinmarketcap api endpoint
+    csv_write_path (str): local directory to write resulting csv files to
+    
+    returns: 
+    polars.LazyFrame
+    """
 
     responses = cmc_extract(cmc_endpoint_url = cmc_endpoint_url, headers = headers, parameters = parameters)
 
@@ -199,27 +258,27 @@ def main():
     metadata_url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info"
 
     quotes = get_quotes(        
-        cmc_endpoint_url = quote_url, 
+        # cmc_endpoint_url = quote_url, 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
         csv_write_path = "extracts/quotes"
     )
 
     map_ = get_map(
-        cmc_endpoint_url = map_url, 
+        # cmc_endpoint_url = map_url, 
         headers = headers, 
         parameters = {}, 
         csv_write_path = "extracts/map"
     )
 
     metadata = get_metadata(
-        cmc_endpoint_url = metadata_url, 
+        # cmc_endpoint_url = metadata_url, 
         headers = headers, 
         parameters = {"symbol":symbols, "skip_invalid": "true"}, 
         csv_write_path = "extracts/metadata"
     )
 
-    for _,frame in {"quote":(quotes,quote_url),"map":(map_,map_url),"metadata":(metadata,metadata_url)}.items(): 
+    for _,frame in {"quote":(quotes,quote_url),"map":(map_,map_url),"metadata":(metadata,metadata_url)}.items():
         missing_symbols = [symbol for symbol in coins_to_track['Symbol'] if symbol not in frame[0].select("symbol").collect()['symbol'].to_list()]
         print(f"Symbols unable to collect {_} data <{missing_symbols}>\n Please verify they are valid symbols tracked on {frame[1]}\n\n")
 
