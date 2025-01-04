@@ -101,7 +101,7 @@
 
     - Extract metadata, map, and latest price quotes for symbols in **coins_to_track.csv**: ```python extract.py```
 
-      - I assume here that symbols in ```coins_to_track.csv``` are static, dealing with a list changing over time breaks downstream analysis due to schema mismatches of batch files (I have an idea on how to adjust for this).
+      - I assume here that symbols in ```coins_to_track.csv``` are static, some problems arise as the symbol list shrinks or grows (I have some ideas on this).
 
       - respective data is written to dedicated directory as a timestamped csv w/ path format: 
       
