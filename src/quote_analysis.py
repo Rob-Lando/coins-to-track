@@ -44,13 +44,12 @@ def read_csv_files(path: str):
     
     return df
 
-def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict ,target_field: str) -> pl.DataFrame:
+def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict, target_field: str) -> pl.DataFrame:
 
     """
-
-    generate new field w/ numerical value of a target field (ex. percent_change_24h) for a reference symbol (ex. BTC) over a join field (ex. LoadedWhen)
-    used later to make relative calculations.
-
+    - select target field and join field from df then filter by symbol
+    - left join result to original df to populate new field
+    - return joined result
 
     parameters:
 
@@ -74,6 +73,10 @@ def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict
             right_on = join_fields["right"],
             suffix = f"_{symbol}"
         )
+
+    else:
+
+        raise Exception(f"filtered df returned no records: {reference_records.shape}")
 
     return df
 
