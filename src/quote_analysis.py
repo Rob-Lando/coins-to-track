@@ -64,7 +64,9 @@ def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict
 
     reference_records = df.filter(pl.col("symbol") == symbol)
 
-    if reference_records.shape != (0,0):
+    print(reference_records)
+
+    if reference_records.shape[0] != 0:
 
         df = df.join(
             reference_records.select(join_fields["right"], target_field), 
@@ -76,7 +78,7 @@ def add_reference_symbol_fields(df: pl.DataFrame, symbol: str, join_fields: dict
 
     else:
 
-        raise Exception(f"filtered df returned no records: {reference_records.shape}")
+        raise ValueError(f"filtered df returned no records: {reference_records.shape}")
 
     return df
 
