@@ -170,7 +170,7 @@ def get_metadata(headers: dict, parameters: dict, csv_write_path: str, cmc_endpo
         # Convert fields of type List[str] to pipe delimited strings so we can write to csv
         if type == pl.List(str):
             meta_df = meta_df.with_columns(pl.col(column).list.join("|"))
-        elif type == pl.List(pl.Null):
+        if type == pl.List(pl.Null):
             # convert fields of type List[Null] to Null
             meta_df = meta_df.with_columns(pl.when(pl.col(column).list == []).then(pl.col(column)))
             meta_df = meta_df.with_columns(pl.col(column).cast(pl.Null))
