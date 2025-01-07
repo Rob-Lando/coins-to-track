@@ -139,7 +139,7 @@ def get_metadata(headers: dict, parameters: dict, csv_write_path: str, cmc_endpo
     returned_symbols = list(returned_data.keys())
 
     meta_dfs = [pl.from_records(data) for symbol,data in returned_data.items()]
-    meta_df = pl.concat([df for df in meta_dfs if df.shape != (0,0)], how = "vertical_relaxed")
+    meta_df = pl.concat([df for df in meta_dfs if df.shape[0] != 0], how = "vertical_relaxed")
 
 
     # Unnesting contract_address, platform, and urls nested fields
